@@ -12,14 +12,18 @@ app.listen(port, () => {
   console.log("The server is up and running on port " + port);
 });
 
-app.use(express.static(path.join(__dirname, "../static"), {
-  dotfiles: "allow"
-}));
+app.use(
+  express.static(path.join(__dirname, "../../static"), {
+    dotfiles: "allow",
+  })
+);
 
 app.use(cors());
 
 app.use("/sumup", sumupRouter);
 
 app.use("/*", (req, res) => {
-  return res.status(404).send("You are lost in the beautiful universe of the web");
-})
+  return res
+    .status(404)
+    .send("You are lost in the beautiful universe of the web");
+});
