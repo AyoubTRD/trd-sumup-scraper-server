@@ -27,7 +27,7 @@ export class ScrapingService {
 
     console.time("Open product page");
     await page.goto(productUrl, {
-      waitUntil: "networkidle2",
+      waitUntil: "domcontentloaded",
     });
     console.timeEnd("Open product page");
 
@@ -42,7 +42,7 @@ export class ScrapingService {
       console.log("Checkout url not ready: ", url);
 
       console.time("Navigation to checkout page");
-      await page.waitForNavigation({ waitUntil: "networkidle2" });
+      await page.waitForNavigation({ waitUntil: "domcontentloaded" });
       console.timeEnd("Navigation to checkout page");
 
       url = page.url();
