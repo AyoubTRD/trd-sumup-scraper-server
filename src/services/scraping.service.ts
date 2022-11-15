@@ -20,10 +20,11 @@ export class ScrapingService {
     const context = await this.browser!.createIncognitoBrowserContext();
     const page = await context.newPage();
 
-    await page.goto(productUrl);
+    await page.goto(productUrl, {
+      waitUntil: "networkidle2",
+    });
 
-    const btn = await page.waitForSelector("#go-to-checkout");
-    await btn?.click();
+    await page.click("#go-to-checkout");
     await sleep(800);
 
     let url = page.url();

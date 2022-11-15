@@ -13,7 +13,10 @@ export const app = express();
 app.use(cors());
 app.use(morgan("short"));
 
-console.log("Serving static files from: ", path.join(__dirname, "../../static"))
+console.log(
+  "Serving static files from: ",
+  path.join(__dirname, "../../static")
+);
 
 app.use(
   express.static(path.join(__dirname, "../../static"), {
@@ -29,21 +32,35 @@ app.use("/*", (req, res) => {
     .send("You are lost in the beautiful universe of the web");
 });
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 4000;
 
-const privateKey = fs.readFileSync("/etc/letsencrypt/live/api.trdsoftwares.com/privkey.pem");
-const fullChain = fs.readFileSync("/etc/letsencrypt/live/api.trdsoftwares.com/fullchain.pem");
+let privateKey: Buffer | null = null;
+let fullChain: Buffer | null = null;
+
+try {
+  privateKey = fs.readFileSync(
+    "/etc/letsencrypt/live/api.trdsoftwares.com/privkey.pem"
+  );
+  fullChain = fs.readFileSync(
+    "/etc/letsencrypt/live/api.trdsoftwares.com/fullchain.pem"
+  );
+} catch (e) {}
 
 if (privateKey && fullChain) {
   console.log("Starting up a production https server....");
-  https.createServer({
-    key: privateKey,
-    cert: fullChain
-  }, app).listen(443, () => {
-    console.log("The server is up and running on port ", 443);
-  });
+  https
+    .createServer(
+      {
+        key: privateKey,
+        cert: fullChain,
+      },
+      app
+    )
+    .listen(443, () => {
+      console.log("The server is up and running on port ", 443);
+    });
 } else {
   app.listen(port, () => {
     console.log("The server is up and running on port: ", port);
-  })
+  });
 }
